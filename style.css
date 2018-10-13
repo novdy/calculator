@@ -26,13 +26,9 @@
 }
 button{
     background-color: crimson;
-    border: none;
     color: white;
+    border: none;
     font-size: 11vh;
-}
-button:hover{
-    background-color: white;
-    color: crimson;
 }
 button:focus{
     outline: 0;
