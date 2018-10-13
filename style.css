@@ -1,0 +1,109 @@
+#container{
+    display: grid;
+    grid-template-columns: 25vw 25vw 25vw 25vw;
+    grid-template-rows: 8vh 20vh 18vh 18vh 18vh 18vh;
+    background-color: deepskyblue;
+}
+#display-mini{
+    height: 10%;
+    grid-column-start: 1;
+    grid-column-end: 5;
+    grid-row: 1;
+    font-size: 4vh;
+    color: white;
+    justify-self: right;
+    align-self: end;
+}
+#display{
+    height: 109%;
+    grid-column-start: 1;
+    grid-column-end: 5;
+    grid-row: 2;
+    font-size: 18vh;
+    color: white;
+    justify-self: right;
+    align-self: end;
+}
+button{
+    background-color: crimson;
+    border: none;
+    color: white;
+    font-size: 11vh;
+}
+button:hover{
+    background-color: white;
+    color: crimson;
+}
+button:focus{
+    outline: 0;
+}
+#b1{
+    grid-column: 1;
+    grid-row: 3;
+}     
+#b2{
+    grid-column: 2;
+    grid-row: 3;
+}     
+#b3{
+    grid-column: 3;
+    grid-row: 3;
+}     
+#plus{
+    grid-column: 4;
+    grid-row: 3;
+}     
+
+
+#b4{
+    grid-column: 1;
+    grid-row: 4;
+}     
+#b5{
+    grid-column: 2;
+    grid-row: 4;
+}     
+#b6{
+    grid-column: 3;
+    grid-row: 4;
+}     
+#minus{
+    grid-column: 4;
+    grid-row: 4;
+}     
+
+
+#b7{
+    grid-column: 1;
+    grid-row: 5;
+} 
+#b8{
+    grid-column: 2;
+    grid-row: 5;
+} 
+#b9{
+    grid-column: 3;
+    grid-row: 5;
+} 
+#times{
+    grid-column: 4;
+    grid-row: 5;
+}
+
+
+#bC{
+    grid-column: 1;
+    grid-row: 6;
+}
+#b0{
+    grid-column: 2;
+    grid-row: 6;
+} 
+#eq{
+    grid-column: 3;
+    grid-row: 6;
+} 
+#divide{
+    grid-column: 4;
+    grid-row: 6;
+}

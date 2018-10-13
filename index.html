@@ -1,0 +1,98 @@
+<!Doctype html>
+<html>
+    <head>
+        <title>Calculator</title>
+        <link rel="stylesheet" type="text/css" href="bootstrap-reboot.min.css">
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="display-mini">0</div>
+            <div id="display">0</div>
+            <button id="b1">1</button><button id="b2">2</button><button id="b3">3</button><button id="plus">+</button>
+            <button id="b4">4</button><button id="b5">5</button><button id="b6">6</button><button id="minus">-</button>
+            <button id="b7">7</button><button id="b8">8</button><button id="b9">9</button><button id="times">*</button>
+            <button id="bC">C</button><button id="b0">0</button><button id="eq">=</button><button id="divide">/</button>
+        </div>
+    </body>
+
+    <script>        
+        operation = {
+            first:"",
+            second:"",
+            op:""
+        };
+
+        function update(number){
+            let disp = document.getElementById('display');
+            disp.removeChild(disp.firstChild);
+            let res = document.createTextNode(number);
+            disp.appendChild(res);
+
+            let dispmini = document.getElementById('display-mini');
+            if(dispmini.firstChild){
+                dispmini.removeChild(dispmini.firstChild);
+                let resmini = (operation.first + ' ' + operation.op + ' ' + operation.second).trim();
+                
+                if(resmini.length > 0){
+                    dispmini.appendChild(document.createTextNode(resmini));
+                }
+            }
+        }
+
+        function clear(){
+            operation.first = '';
+            operation.second = '';
+            operation.op = '';
+        }
+
+        function operate(){
+            decimalPlaces = 10;
+            if(operation.op === '+'){
+                    update(+operation.first + +operation.second);
+                    clear();
+            } else if(operation.op === '-'){
+                    update(+operation.first - +operation.second);
+                    clear();
+            } else if(operation.op === '*'){
+                    update(Math.round((+operation.first * +operation.second)*10**decimalPlaces) / 10**decimalPlaces);
+                    clear();
+            } else if(operation.op === '/'){
+                    update(Math.round((+operation.first / +operation.second)*10**decimalPlaces) / 10**decimalPlaces);
+                    clear();
+            }
+        }
+
+        let btns = document.querySelectorAll('button');
+        btns.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                if (btn.innerText === '='){
+                    operate();
+                } else if (btn.textContent === 'C'){
+                    clear();
+                    update('0');
+                    document.getElementById('display-mini').appendChild(document.createTextNode('0'));
+                } else if (btn.textContent === '+'){
+                    operation.op = '+';
+                    update('+')
+                } else if (btn.textContent === '-'){
+                    operation.op = '-';
+                    update('-')
+                } else if (btn.textContent === '*'){
+                    operation.op = '*';
+                    update('*')
+                } else if (btn.textContent === '/'){
+                    operation.op = '/';
+                    update('/')
+                }  else if (operation.op === ''){
+                    operation.first += btn.textContent;
+                    update(operation.first);
+                } else {
+                    operation.second += btn.textContent;
+                    update(operation.second);
+                }
+            })
+        })
+    </script>
+</html>
