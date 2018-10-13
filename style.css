@@ -1,13 +1,13 @@
 #container{
     display: grid;
-    grid-template-columns: 25vw 25vw 25vw 25vw;
+    grid-template-columns: 20vw 20vw 20vw 20vw 20vw;
     grid-template-rows: 8vh 20vh 18vh 18vh 18vh 18vh;
     background-color: deepskyblue;
 }
 #display-mini{
     height: 10%;
     grid-column-start: 1;
-    grid-column-end: 5;
+    grid-column-end: 6;
     grid-row: 1;
     font-size: 4vh;
     color: white;
@@ -17,7 +17,7 @@
 #display{
     height: 109%;
     grid-column-start: 1;
-    grid-column-end: 5;
+    grid-column-end: 6;
     grid-row: 2;
     font-size: 18vh;
     color: white;
@@ -52,7 +52,13 @@ button:focus{
 #plus{
     grid-column: 4;
     grid-row: 3;
-}     
+}    
+#del{
+    grid-column: 5;
+    grid-row: 3;
+    letter-spacing: -0.24em;
+    padding-right: 0.48em;
+}
 
 
 #b4{
@@ -99,11 +105,17 @@ button:focus{
     grid-column: 2;
     grid-row: 6;
 } 
-#eq{
+#dot{
     grid-column: 3;
     grid-row: 6;
 } 
 #divide{
     grid-column: 4;
     grid-row: 6;
+}
+
+#eq{
+    grid-column: 5;
+    grid-row-start: 4;
+    grid-row-end: 7;
 }
