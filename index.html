@@ -37,6 +37,13 @@
                 dispmini.removeChild(dispmini.firstChild);
                 let resmini = "";
                 for (let i = 0; i < operation.length; i++){
+                    numString = operation[i];
+                    if (i != 0){
+                        if (i % 2 === 0 && numString.includes('.') && numString[numString.length - 1] != '.'){
+                            console.log(i + ': ' + operation[i] + ': ' + operation[i]);
+                            operation[i] = (Math.round(+numString * 10**decimalPlaces) / 10**decimalPlaces).toString();
+                        }
+                    }                    
                     resmini += operation[i];
                 }
                 
@@ -44,19 +51,6 @@
                     dispmini.appendChild(document.createTextNode(resmini));
                 }
             }
-        }
-
-        function bufferIsNotPrimedRelativeIndexOfOperator(index){
-            if(operation[operation.length + index] === '+'){
-                buffer = +operation[0] + +operation[2];
-            } else if(operation[operation.length - 3] === '-'){
-                buffer = +operation[0] - +operation[2];
-            } else if(operation[operation.length - 3] === '\u00D7'){
-                buffer = +operation[0] * +operation[2];
-            } else if(operation[operation.length - 3] === '\u00F7'){
-                buffer = +operation[0] / +operation[2];
-            }
-            update(Math.round(buffer * 10**decimalPlaces) / 10**decimalPlaces);
         }
 
         function bufferIsPrimedRelativeIndexOfOperator(index){
@@ -69,7 +63,22 @@
             } else if(operation[operation.length + index] === '\u00F7'){
                 buffer /= +operation[operation.length + index + 1];
             }
-            update(Math.round(buffer * 10**decimalPlaces) / 10**decimalPlaces);            
+            buffer = Math.round(buffer * 10**decimalPlaces) / 10**decimalPlaces
+            update(buffer);
+        }
+
+        function bufferIsNotPrimedRelativeIndexOfOperator(index){
+            if(operation[operation.length + index] === '+'){
+                buffer = +operation[operation.length + index - 1] + +operation[operation.length + index + 1];
+            } else if(operation[operation.length + index] === '-'){
+                buffer = +operation[operation.length + index - 1] - +operation[operation.length + index + 1];
+            } else if(operation[operation.length + index] === '\u00D7'){
+                buffer = +operation[operation.length + index - 1] * +operation[operation.length + index + 1];
+            } else if(operation[operation.length + index] === '\u00F7'){
+                buffer = +operation[operation.length + index - 1] / +operation[operation.length + index + 1];
+            }
+            buffer = Math.round(buffer * 10**decimalPlaces) / 10**decimalPlaces
+            update(buffer);
         }
 
         function operate(){
@@ -98,7 +107,8 @@
                 if (btn.id === 'eq'){
                     operate();
                     bufferIsPrimed = true;
-                    operation = Array(buffer.toString());
+                    operation = Array();
+                    operation.push(buffer);
                     updateMini();
                 } else if (btn.id === 'bC'){
                     bufferIsPrimed = false;
@@ -141,10 +151,31 @@
                         updateMini();
                         operate();
                     }
+                } else if (btn.id === 'dot'){
+                    if (operation.length % 2 == 0) {
+                        operation.push('.');
+                        update(operation[operation.length - 1]);
+                    } else if (!(bufferIsPrimed && operation.length === 1)){
+                        if (!operation[operation.length - 1].includes('.')){
+                            operation[operation.length - 1] += '.';
+                            update(operation[operation.length - 1]);    
+                        }
+                    } else if (bufferIsPrimed && operation.length === 1){
+                        bufferIsPrimed = false;
+                        operation = Array();
+                        operation.push('.');
+                        update(operation[operation.length - 1]);
+                    }
                 } else if (operation.length % 2 == 0){
                     operation.push(btn.textContent)
                     update(operation[operation.length - 1]);
-                } else {
+                } else if (bufferIsPrimed && operation.length === 1){
+                    bufferIsPrimed = false;
+                    operation = Array();
+                    operation.push(btn.textContent);
+                    update(operation[operation.length - 1]);
+                }
+                else {
                     operation[operation.length - 1] += btn.textContent.toString();
                     update(operation[operation.length - 1]);
                 }
