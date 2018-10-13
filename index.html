@@ -18,10 +18,11 @@
     </body>
 
     <script>        
-        let operation = Array();
+        let expression = Array();
         let decimalPlaces = 10;
         let buffer;
         let bufferIsPrimed = false;
+        let equalsPressed = false;
 
         function update(number){
             let disp = document.getElementById('display');
@@ -36,67 +37,71 @@
             if(dispmini.firstChild){
                 dispmini.removeChild(dispmini.firstChild);
                 let resmini = "";
-                for (let i = 0; i < operation.length; i++){
-                    numString = operation[i];
+                for (let i = 0; i < expression.length; i++){
+                    numString = expression[i];
                     if (i != 0){
                         if (i % 2 === 0 && numString.includes('.') && numString[numString.length - 1] != '.'){
-                            console.log(i + ': ' + operation[i] + ': ' + operation[i]);
-                            operation[i] = (Math.round(+numString * 10**decimalPlaces) / 10**decimalPlaces).toString();
+                            console.log(i + ': ' + expression[i] + ': ' + expression[i]);
+                            expression[i] = (Math.round(+numString * 10**decimalPlaces) / 10**decimalPlaces).toString();
                         }
                     }                    
-                    resmini += operation[i];
+                    resmini += expression[i];
                 }
                 
                 if (resmini.length > 0){
                     dispmini.appendChild(document.createTextNode(resmini));
+                } else {
+                    dispmini.appendChild(document.createTextNode('0'));
                 }
+            } else {
+                dispmini.appendChild(document.createTextNode('0'));
             }
         }
 
         function bufferIsPrimedRelativeIndexOfOperator(index){
-            if(operation[operation.length + index] === '+'){
-                buffer += +operation[operation.length + index + 1];
-            } else if(operation[operation.length + index] === '-'){
-                buffer -= +operation[operation.length + index + 1];
-            } else if(operation[operation.length + index] === '\u00D7'){
-                buffer *= +operation[operation.length + index + 1];
-            } else if(operation[operation.length + index] === '\u00F7'){
-                buffer /= +operation[operation.length + index + 1];
+            if(expression[expression.length + index] === '+'){
+                buffer += +expression[expression.length + index + 1];
+            } else if(expression[expression.length + index] === '-'){
+                buffer -= +expression[expression.length + index + 1];
+            } else if(expression[expression.length + index] === '\u00D7'){
+                buffer *= +expression[expression.length + index + 1];
+            } else if(expression[expression.length + index] === '\u00F7'){
+                buffer /= +expression[expression.length + index + 1];
             }
             buffer = Math.round(buffer * 10**decimalPlaces) / 10**decimalPlaces
             update(buffer);
         }
 
         function bufferIsNotPrimedRelativeIndexOfOperator(index){
-            if(operation[operation.length + index] === '+'){
-                buffer = +operation[operation.length + index - 1] + +operation[operation.length + index + 1];
-            } else if(operation[operation.length + index] === '-'){
-                buffer = +operation[operation.length + index - 1] - +operation[operation.length + index + 1];
-            } else if(operation[operation.length + index] === '\u00D7'){
-                buffer = +operation[operation.length + index - 1] * +operation[operation.length + index + 1];
-            } else if(operation[operation.length + index] === '\u00F7'){
-                buffer = +operation[operation.length + index - 1] / +operation[operation.length + index + 1];
+            if(expression[expression.length + index] === '+'){
+                buffer = +expression[expression.length + index - 1] + +expression[expression.length + index + 1];
+            } else if(expression[expression.length + index] === '-'){
+                buffer = +expression[expression.length + index - 1] - +expression[expression.length + index + 1];
+            } else if(expression[expression.length + index] === '\u00D7'){
+                buffer = +expression[expression.length + index - 1] * +expression[expression.length + index + 1];
+            } else if(expression[expression.length + index] === '\u00F7'){
+                buffer = +expression[expression.length + index - 1] / +expression[expression.length + index + 1];
             }
             buffer = Math.round(buffer * 10**decimalPlaces) / 10**decimalPlaces
             update(buffer);
         }
 
         function operate(){
-            if (operation.length == 3){
+            if (expression.length == 3){
                 if (bufferIsPrimed){
                     bufferIsPrimedRelativeIndexOfOperator(-2);
                 } else {
                     bufferIsNotPrimedRelativeIndexOfOperator(-2);
                 }
-            } else if (operation.length == 4){
+            } else if (expression.length == 4){
                 if (bufferIsPrimed){
                     bufferIsPrimedRelativeIndexOfOperator(-3);
                 } else {
                     bufferIsNotPrimedRelativeIndexOfOperator(-3);
                 }
-            } else if (!['+', '-', '\u00D7', '\u00F7'].includes(operation[operation.length - 1])) {
+            } else if (!['+', '-', '\u00D7', '\u00F7'].includes(expression[expression.length - 1])) {
                 bufferIsPrimedRelativeIndexOfOperator(-2);
-            } else if (operation.length > 4) {
+            } else if (expression.length > 4) {
                 bufferIsPrimedRelativeIndexOfOperator(-3);
             } 
         }
@@ -105,79 +110,94 @@
         btns.forEach((btn) => {
             btn.addEventListener('click', () => {
                 if (btn.id === 'eq'){
-                    operate();
-                    bufferIsPrimed = true;
-                    operation = Array();
-                    operation.push(buffer);
-                    updateMini();
-                } else if (btn.id === 'bC'){
-                    bufferIsPrimed = false;
-                    operation = Array();
-                    update('0');
-                    document.getElementById('display-mini').appendChild(document.createTextNode('0'));
-                } else if (btn.id === 'plus'){
-                    if(operation.length % 2 === 0 && operation.length != 0){
-                        operation[operation.length - 1] = '+';
+                    if (!['+', '-', '\u00D7', '\u00F7'].includes(expression[expression.length - 1])){
+                        operate();
+                        bufferIsPrimed = true;
+                        expression = Array();
+                        expression.push(buffer);
                         updateMini();
-                    } else if (operation.length % 2 === 1){
-                        operation.push('+');
+                    }                    
+                } else if (btn.id === 'bC'){
+                    expression = Array();
+                    update('0');
+                    bufferIsPrimed = false;
+                } else if (btn.id === 'plus'){
+                    if(expression.length % 2 === 0 && expression.length != 0){
+                        expression[expression.length - 1] = '+';
+                        updateMini();
+                    } else if (expression.length % 2 === 1){
+                        expression.push('+');
                         updateMini();
                         operate();
                     }
                 } else if (btn.id === 'minus'){
-                    if(operation.length % 2 === 0 && operation.length != 0){
-                        operation[operation.length - 1] = '-';
+                    if(expression.length % 2 === 0 && expression.length != 0){
+                        expression[expression.length - 1] = '-';
                         updateMini();
-                    } else if (operation.length % 2 === 1){
-                        operation.push('-');
+                    } else if (expression.length % 2 === 1){
+                        expression.push('-');
                         updateMini();
                         operate();
                     }
                 } else if (btn.id === 'times'){
-                    if(operation.length % 2 === 0 && operation.length != 0){
-                        operation[operation.length - 1] = '\u00D7';
+                    if(expression.length % 2 === 0 && expression.length != 0){
+                        expression[expression.length - 1] = '\u00D7';
                         updateMini();
-                    } else if (operation.length % 2 === 1){
-                        operation.push('\u00D7');
+                    } else if (expression.length % 2 === 1){
+                        expression.push('\u00D7');
                         updateMini();
                         operate();
                     }
                 } else if (btn.id === 'divide'){
-                    if(operation.length % 2 === 0 && operation.length != 0){
-                        operation[operation.length - 1] = '\u00F7';
+                    if(expression.length % 2 === 0 && expression.length != 0){
+                        expression[expression.length - 1] = '\u00F7';
                         updateMini();
-                    } else if (operation.length % 2 === 1){
-                        operation.push('\u00F7');
+                    } else if (expression.length % 2 === 1){
+                        expression.push('\u00F7');
                         updateMini();
                         operate();
                     }
-                } else if (btn.id === 'dot'){
-                    if (operation.length % 2 == 0) {
-                        operation.push('.');
-                        update(operation[operation.length - 1]);
-                    } else if (!(bufferIsPrimed && operation.length === 1)){
-                        if (!operation[operation.length - 1].includes('.')){
-                            operation[operation.length - 1] += '.';
-                            update(operation[operation.length - 1]);    
+                } else if (btn.id === 'del'){
+                    if (expression.length != 0){
+                        if(bufferIsPrimed && expression.length === 1){
+                            expression.pop();
+                            update('0');
+                            bufferIsPrimed = false;
+                        } else if (!['+','-','\u00D7','\u00F7'].includes(expression[expression.length - 1])) {
+                            expression[expression.length - 1] = expression[expression.length - 1].slice(0,-1);
+                            if (expression[expression.length - 1] === ''){
+                                expression.pop();
+                                if (expression.length === 0){
+                                    update('0');
+                                } else {
+                                    update(expression[expression.length - 2]);
+                                }
+                            } else if (!['+','-','\u00D7','\u00F7'].includes(expression[expression.length - 1])){
+                                update(expression[expression.length - 1]);
+                            }
                         }
-                    } else if (bufferIsPrimed && operation.length === 1){
-                        bufferIsPrimed = false;
-                        operation = Array();
-                        operation.push('.');
-                        update(operation[operation.length - 1]);
-                    }
-                } else if (operation.length % 2 == 0){
-                    operation.push(btn.textContent)
-                    update(operation[operation.length - 1]);
-                } else if (bufferIsPrimed && operation.length === 1){
+                    }                    
+                } else if (bufferIsPrimed && expression.length === 1){
+                    expression = Array();
+                    expression.push(btn.textContent);
+                    update(expression[expression.length - 1]);
                     bufferIsPrimed = false;
-                    operation = Array();
-                    operation.push(btn.textContent);
-                    update(operation[operation.length - 1]);
-                }
-                else {
-                    operation[operation.length - 1] += btn.textContent.toString();
-                    update(operation[operation.length - 1]);
+                } else if (btn.id === 'dot'){
+                    if (expression.length % 2 == 0) {
+                        expression.push('.');
+                        update(expression[expression.length - 1]);
+                    } else if (!(bufferIsPrimed && expression.length === 1)){
+                        if (!expression[expression.length - 1].includes('.')){
+                            expression[expression.length - 1] += '.';
+                            update(expression[expression.length - 1]);    
+                        }
+                    } 
+                } else if (expression.length % 2 == 0){
+                    expression.push(btn.textContent)
+                    update(expression[expression.length - 1]);
+                } else {
+                    expression[expression.length - 1] += btn.textContent.toString();
+                    update(expression[expression.length - 1]);
                 }
             })
         })
